@@ -24,10 +24,10 @@ def parse_file(input_file_path, output_file_path):
 
     input_file.close()
 
-parse_file('C:\Users\cfilip09\Downloads\dblp.xml\dblp.xml', 'C:\Master\TimeSeries\data\\result.txt')
+parse_file('C:\Users\cfilip09\Downloads\dblp.xml\dblp.xml', 'C:\Master\TimeSeries\data\\result.csv')
 
 
-year_df = pandas.read_csv('C:\Master\TimeSeries\data\\result.txt', names=["year"])
+year_df = pandas.read_csv('C:\Master\TimeSeries\data\\result.csv', names=["year"])
 select2016 = year_df['year'] <= 2016 
 data = year_df[select2016].groupby('year')['year'].count().reset_index(name="count").as_matrix()
 
