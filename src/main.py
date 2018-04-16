@@ -1,6 +1,7 @@
 import os.path
 import pandas
 import matplotlib.pyplot as plt
+from sklearn.svm import SVR
 
 def parse_file(input_file_path, output_file_path):
     
@@ -28,10 +29,27 @@ parse_file('C:\Users\cfilip09\Downloads\dblp.xml\dblp.xml', 'C:\Master\TimeSerie
 
 
 year_df = pandas.read_csv('C:\Master\TimeSeries\data\\result.csv', names=["year"])
-select2016 = year_df['year'] <= 2016 
+select2016 = year_df['year'] <= 2016
+all_data = year_df.groupby('year')['year'].count().reset_index(name="count").as_matrix()
 data = year_df[select2016].groupby('year')['year'].count().reset_index(name="count").as_matrix()
 
-plt.plot(data[:,0], data[:,1])
+year_data = list()
+
+for item in data:
+    year_data.append([item[0]])
+
+# print data[:, 0]
+# print data[:, 1]
+
+svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+svr_poly = SVR(kernel='poly', C=1e3, degree=2)
+y_rbf = svr_rbf.fit(year_data, data[:,1]).predict(year_data)
+#y_poly = svr_poly.fit(year_data, data[:,1]).predict(year_data)
+
+plt.plot(year_data, data[:,1])
+plt.plot(year_data, y_rbf, color='navy', lw=2, label='RBF model')
+#plt.plot(year_data, y_poly, color='darkorange', lw=2, label='Polynomial model')
 plt.ylabel('number of articles')
 plt.xlabel('year')
+plt.title('Time series regression')
 plt.show()
