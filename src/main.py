@@ -1,8 +1,6 @@
 import os.path
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
 import numpy as np
 
 def parse_file(input_file_path, output_file_path):
@@ -61,7 +59,13 @@ def double_exponential_smoothing_extended(series, alpha, beta, n_pred):
 
     return np.array(result)
 
+def mean_absolute_percentage_error(y_true, y_pred): 
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+# enter the path of the original text file
 input_file = 'C:\Users\cfilip09\Downloads\dblp.xml\dblp.xml'
+# enter the path to save the intermediate file
 intermediate_file = 'C:\Users\\filippisc\Projects\Master\\time_series_analysis\data\\result.csv'
 
 last_year = 2017
@@ -82,13 +86,10 @@ for x in range(1, n_predictions):
     pred_years = np.append(pred_years, last_year + x)
 
 result = double_exponential_smoothing_extended(actual_series, alpha, beta, n_predictions)
-# print filterd_data_df
-# plt.plot(all_data_df['year'].as_matrix(), all_data_df['count'].as_matrix(), color='green', lw=2, label='actual')
-#print ''+str(pred_years[-1]) + '|' + str(result[-1])
 plt.plot(years, actual_series, color='navy', lw=2, label='prediction')
 plt.plot(pred_years, result, color='red', lw=2)
 plt.ylabel('number of articles')
 plt.xlabel('year')
 plt.title('Time series regression')
 plt.show()
-print mean_absolute_error(actual_series[0:len(actual_series)], result[0:len(result)-1])
+print mean_absolute_percentage_error(actual_series[0:len(actual_series)], result[0:len(result)-1])
